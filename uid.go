@@ -11,7 +11,7 @@ import (
 
 const (
 	_SEQUENCE_MAX      = 99 // 序号最大值
-	_SEQUENCE_STR_SIZE = 3  // 序号转为字符串的长度
+	_SEQUENCE_STR_SIZE = 2  // 序号转为字符串的长度
 )
 
 // IDWorkder 表示一个序列号生成器
@@ -84,7 +84,7 @@ func (w *IDWorkder) NextID() (string, error) {
 	}
 
 	w.lastTimestamp = ts
-	id := w.workerID + to.String(ts) + formatSequence(w.sequence)
+	id := w.workerID + formatUnixTimestamp(ts) + formatSequence(w.sequence)
 	return id, nil
 }
 
@@ -93,4 +93,10 @@ func (w *IDWorkder) NextID() (string, error) {
 func formatSequence(num int64) string {
 	numStr := to.String(num)
 	return strings.Repeat("0", _SEQUENCE_STR_SIZE-len(numStr)) + numStr
+}
+
+func formatUnixTimestamp(ts int64) string {
+	sec := ts / 1000
+	mspart := ts - sec*1000
+	return time.Unix(sec, 0).Format("20060102150405") + to.String(mspart)
 }
