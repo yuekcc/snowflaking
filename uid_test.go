@@ -23,7 +23,7 @@ func TestNextID(t *testing.T) {
 }
 
 func TestNextIDBatch(t *testing.T) {
-	Convey("生成 ID", t, func() {
+	Convey("批量生成 ID", t, func() {
 		worker, err := NewIDWorkder(1000)
 		So(err, ShouldBeNil)
 		So(worker, ShouldNotBeNil)
@@ -37,6 +37,20 @@ func TestNextIDBatch(t *testing.T) {
 				t.Log("wait for 2 seconds")
 			}
 		}
+	})
+}
+
+func TestUniCheck(t *testing.T) {
+	Convey("重复率检查", t, func() {
+		worker, _ := NewIDWorkder(2000)
+		ds := make(map[string]bool)
+		countMax := 10000000
+		for i := 0; i < countMax; i++ {
+			id, _ := worker.NextID()
+			ds[id] = true
+		}
+
+		So(len(ds), ShouldEqual, countMax)
 	})
 }
 
