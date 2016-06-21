@@ -97,6 +97,6 @@ func formatSequence(num int64) string {
 
 func formatUnixTimestamp(ts int64) string {
 	sec := ts / 1000
-	mspart := ts - sec*1000
-	return time.Unix(sec, 0).Format("20060102150405") + to.String(mspart)
+	mspart := to.String(ts - sec*1000)
+	return time.Unix(sec, 0).Format("20060102150405") + strings.Repeat("0", 3-len(mspart)) + mspart
 }
