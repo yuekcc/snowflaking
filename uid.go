@@ -2,17 +2,20 @@ package snowflaking
 
 import (
 	"errors"
+	"fmt"
 	"strings"
 	"sync"
 	"time"
-
-	"github.com/seefan/to"
 )
 
 const (
 	_SEQUENCE_MAX      = 99 // 序号最大值
 	_SEQUENCE_STR_SIZE = 2  // 序号转为字符串的长度
 )
+
+func formatNumber(num int64) string {
+	return fmt.Sprintf("%d", num)
+}
 
 // IDWorkder 表示一个序列号生成器
 //
@@ -31,7 +34,7 @@ func NewIDWorkder(id int) (*IDWorkder, error) {
 	}
 
 	worker := &IDWorkder{
-		workerID:      to.String(id),
+		workerID:      formatNumber(int64(id)),
 		lastTimestamp: 0,
 		sequence:      1,
 	}
@@ -44,7 +47,7 @@ func (w *IDWorkder) getTimestamp() int64 {
 	return time.Now().UnixNano() / int64(1000000)
 }
 
-func (w *IDWorkder) regetTimestamp(last int64) int64 {
+func (w *IDWorkder) refreshTimestamp(last int64) int64 {
 	t := w.getTimestamp()
 	for {
 		if t <= last {
@@ -57,9 +60,9 @@ func (w *IDWorkder) regetTimestamp(last int64) int64 {
 	return t
 }
 
-// NextID 生成流水号
+// Next 生成流水号
 //
-func (w *IDWorkder) NextID() (string, error) {
+func (w *IDWorkder) Next() (string, error) {
 	w.Lock()
 	defer w.Unlock()
 
@@ -79,7 +82,7 @@ func (w *IDWorkder) NextID() (string, error) {
 			break
 		}
 
-		ts = w.regetTimestamp(ts)
+		ts = w.refreshTimestamp(ts)
 		w.lastTimestamp = ts
 	}
 
@@ -91,12 +94,12 @@ func (w *IDWorkder) NextID() (string, error) {
 // formatSequence 格式化序号，长度不够的，补零
 //
 func formatSequence(num int64) string {
-	numStr := to.String(num)
+	numStr := formatNumber(num)
 	return strings.Repeat("0", _SEQUENCE_STR_SIZE-len(numStr)) + numStr
 }
 
 func formatUnixTimestamp(ts int64) string {
 	sec := ts / 1000
-	mspart := to.String(ts - sec*1000)
-	return time.Unix(sec, 0).Format("20060102150405") + strings.Repeat("0", 3-len(mspart)) + mspart
+	ms := formatNumber(ts - sec*1000)
+	return time.Unix(sec, 0).Format("20060102150405") + strings.Repeat("0", 3-len(ms)) + ms
 }

@@ -14,7 +14,7 @@ func TestNextID(t *testing.T) {
 		So(err, ShouldBeNil)
 		So(worker, ShouldNotBeNil)
 
-		id, err := worker.NextID()
+		id, err := worker.Next()
 		So(err, ShouldBeNil)
 		So(id, ShouldNotBeEmpty)
 
@@ -29,7 +29,7 @@ func TestNextIDBatch(t *testing.T) {
 		So(worker, ShouldNotBeNil)
 
 		for i := 0; i < 205; i++ {
-			id, _ := worker.NextID()
+			id, _ := worker.Next()
 			t.Log(id)
 
 			if i == 50 {
@@ -46,7 +46,7 @@ func TestUniCheck(t *testing.T) {
 		ds := make(map[string]bool)
 		countMax := 10000000
 		for i := 0; i < countMax; i++ {
-			id, _ := worker.NextID()
+			id, _ := worker.Next()
 			ds[id] = true
 		}
 
@@ -61,7 +61,7 @@ func BenchmarkSnowFlaking(b *testing.B) {
 
 	b.StartTimer()
 	for i := 0; i < b.N; i++ {
-		worker.NextID()
+		worker.Next()
 	}
 }
 
