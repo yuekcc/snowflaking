@@ -1,9 +1,11 @@
-Snow Flaking
-=============
+# Snowflaking
 
-一个超慢的 ID 生成库，可以生成连续的数值流水号。灵感来自 [SnowFlake](https://github.com/twitter/snowflake) 的 [Golang 实现](https://github.com/zheng-ji/goSnowFlake)。
+一个 **慢速** 流水号生成库，生成连续的数值流水号。灵感来自 [SnowFlake](snowflake) 的 [Go 语言实现](goSnowFlake)。
 
-像这样：
+[snowflake]: https://github.com/twitter/snowflake
+[goSnowFlake]: https://github.com/zheng-ji/goSnowFlake
+
+生成的是流水号，可以用于订单类的系统。流水号像这样：
 
 ```
 	uid_test.go:33: 10002016061718222627096
@@ -27,4 +29,4 @@ Snow Flaking
 
 ## License
 
-见 LICENSE。
+[MIT](LICENSE)
