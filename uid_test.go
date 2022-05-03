@@ -5,7 +5,6 @@ import (
 	"time"
 
 	. "github.com/smartystreets/goconvey/convey"
-	"github.com/yuekcc/goSnowFlake"
 )
 
 func TestNextID(t *testing.T) {
@@ -62,15 +61,5 @@ func BenchmarkSnowFlaking(b *testing.B) {
 	b.StartTimer()
 	for i := 0; i < b.N; i++ {
 		worker.Next()
-	}
-}
-
-func BenchmarkSnowFlake(b *testing.B) {
-	b.StopTimer()
-	iw, _ := goSnowFlake.NewIdWorker(1)
-
-	b.StartTimer()
-	for i := 0; i < b.N; i++ {
-		iw.NextId()
 	}
 }
